@@ -1,7 +1,4 @@
-from fastapi import FastAPI # type: ignore
+import google.genai as genai # type: ignore
 
-app=FastAPI()
-
-@app.get("/")
-async def read_root():
-    return {"message":"Hello World I am speaking from Bengaluru, India"}
+for m in genai.list_models():
+    print(m.name, m.supported_generation_methods)
