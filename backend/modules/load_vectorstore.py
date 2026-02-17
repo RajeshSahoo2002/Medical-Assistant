@@ -39,6 +39,11 @@ existing_indexes=[i["name"]for i in pc.list_indexes()]
 if PINECONE_INDEX_NAME not in existing_indexes:
     pc.create_index(
         name=PINECONE_INDEX_NAME,
+        # The `dimension=3072` parameter in the `pc.create_index` function call is specifying the
+        # dimensionality of the vectors that will be stored in the Pinecone index. In this case, it is
+        # setting the dimensionality of the vectors to 3072. This means that each vector stored in the
+        # index will have 3072 dimensions. This dimensionality is important for various operations
+        # such as similarity calculations and nearest neighbor searches within the vector space.
         dimension=3072,
         metric="dotproduct",
         spec=spec
