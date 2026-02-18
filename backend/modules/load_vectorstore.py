@@ -10,7 +10,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings # type: ignore
 
 # from google import genai
 
-# client = genai.Client(api_key="AIzaSyBofkhoHCCjoMHQ3XgD83s9CenLBJ4W31s")
+# client = genai.Client(api_key="GOOGLE_API_KEY")
 
 # for model in client.models.list():
 #     print(model.name)
