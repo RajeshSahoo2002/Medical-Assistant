@@ -11,5 +11,5 @@ def query_chain(chain,user_input:str):
         logger.debug(f"Chain response:{response}")
         return response
     except Exception as e:
-        logger.execution("Error on query chain")
+        logger.exception("Error on query chain")
         raise

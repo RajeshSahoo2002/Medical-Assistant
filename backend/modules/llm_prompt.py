@@ -12,7 +12,7 @@ GROQ_API_KEY=os.getenv("GROQ_API_KEY")
 
 def get_llm_chain(retriever):
     llm=ChatGroq(
-        model_name="llama3-70b-8192",
+        model_name="llama-3.1-8b-instant",
         groq_api_key=GROQ_API_KEY
     )
     

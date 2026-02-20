@@ -23,7 +23,7 @@ GOOGLE_API_KEY=os.getenv("GOOGLE_API_KEY")
 PINECONE_API_KEY=os.getenv("PINECONE_API_KEY")
 # As we are using pinecone free tier so it will give AWS as the cloud source provider and gives the us-east region by default for the free-tiers
 PINECONE_ENV="us-east-1"
-PINECONE_INDEX_NAME="indexmedical"
+PINECONE_INDEX_NAME="healthsage-index-ai-assistant"
 
 os.environ["GOOGLE_API_KEY"]=GOOGLE_API_KEY
 
@@ -35,22 +35,26 @@ pc=Pinecone(api_key=PINECONE_API_KEY)
 spec=ServerlessSpec(cloud="aws",region=PINECONE_ENV)
 existing_indexes=[i["name"]for i in pc.list_indexes()]
 
+INDEX_DIMENSION=3072
 # Below function is to create a index
 if PINECONE_INDEX_NAME not in existing_indexes:
     pc.create_index(
-        name=PINECONE_INDEX_NAME,
-        # The `dimension=3072` parameter in the `pc.create_index` function call is specifying the
-        # dimensionality of the vectors that will be stored in the Pinecone index. In this case, it is
-        # setting the dimensionality of the vectors to 3072. This means that each vector stored in the
-        # index will have 3072 dimensions. This dimensionality is important for various operations
-        # such as similarity calculations and nearest neighbor searches within the vector space.
-        dimension=3072,
-        metric="dotproduct",
-        spec=spec
-    )
-    #Below while loop is to give some rest to our embedding model so untill the index is created
+    name=PINECONE_INDEX_NAME,
+    dimension=3072,
+    metric="cosine",
+    spec=spec
+)
+    #Below while loop is to give some rest to our embedding model so until the index is created
     while not pc.describe_index(PINECONE_INDEX_NAME).status["ready"]:
         time.sleep(1)
+    else:
+        current_dim = pc.describe_index(PINECONE_INDEX_NAME).dimension
+        if current_dim != INDEX_DIMENSION:
+            raise ValueError(
+                f"Index '{PINECONE_INDEX_NAME}' has dimension {current_dim}, "
+                f"but embedder expects {INDEX_DIMENSION}. "
+                "Delete/recreate index or use matching embedding dimension."
+            )
 index=pc.Index(PINECONE_INDEX_NAME)
 
 #load, split, embed the healthcare pdf docs
@@ -82,6 +86,7 @@ def load_vectorstore(uploaded_files):
         print(f"Embedding chunks/documents")
         #now embedding variable will contain the embedded vectors
         embedding=embed_model.embed_documents(texts)
+        print("Embedding dimension:", len(embedding[0]))
         
         # Upsert the embedded vectors to the pinecone database
         print(f"📤 Upserting the embedded vectors into the pinecone database")
