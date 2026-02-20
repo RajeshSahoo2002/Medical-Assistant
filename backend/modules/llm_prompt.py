@@ -46,5 +46,5 @@ def get_llm_chain(retriever):
         llm=llm,
         retriever=retriever,
         chain_type_kwargs={"prompt": prompt},
-        return_source_documents=True
+        return_source_documents=True,
     )

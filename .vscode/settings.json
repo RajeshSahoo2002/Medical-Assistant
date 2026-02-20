@@ -1,9 +1,12 @@
 {
     "cSpell.words": [
         "dotproduct",
+        "embedder",
         "genai",
+        "healthsage",
         "indexmedical",
         "pdfs",
+        "streamlit",
         "Upserting",
         "vectorstore"
     ]
